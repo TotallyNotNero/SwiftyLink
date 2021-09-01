@@ -7,6 +7,7 @@
 
 import Foundation
 import Logging
+import Discord
 
 fileprivate let logger = Logger(label: "SwiftyNode")
 
@@ -33,8 +34,11 @@ open class SwiftyNode {
     /// The underlying WebSocket connection
     var ws: URLSessionWebSocketTask?
     
-    /// Helper method for sending a payload to a guild's shard
-    public let sendPayload: (()->Void)?
+    /// A collection of players, mapped by their Guild IDs
+    var players = [String: Player]()
+    
+    /// The client responsible for this node
+    let client: DiscordClient
 
     // MARK: Initializers
     
@@ -45,14 +49,14 @@ open class SwiftyNode {
     /// - parameter shards: Number of shards your client is operating on.
     /// - parameter password: Lavalink password
     ///
-    init(password: String, port: String, ID: String, shards: String, host: String, sendPayload: @escaping () -> Void) {
+    public required init(password: String, port: String, ID: String, shards: String, host: String, client: DiscordClient) {
         self.password = password
         self.port = port
         self.shards = shards
         self.ID = ID
         self.host = host
+        self.client = client
         self.ws = nil
-        self.sendPayload = sendPayload
     }
     
     // MARK: Methods
@@ -68,7 +72,7 @@ open class SwiftyNode {
         Request.addValue(password, forHTTPHeaderField: "Authorization")
         Request.addValue(shards, forHTTPHeaderField: "Num-Shards")
         Request.addValue(ID, forHTTPHeaderField: "User-Id")
-        Request.addValue("SwiftLink", forHTTPHeaderField: "Client-Name")
+        Request.addValue("SwiftyLink", forHTTPHeaderField: "Client-Name")
 
         let Session = URLSession(configuration: .ephemeral)
         self.ws = Session.webSocketTask(with: Request)
@@ -114,5 +118,18 @@ open class SwiftyNode {
                 self.recieveMessage()
             }
         }
+    }
+    
+    open func createPlayer(guild: String) -> Player {
+        
+        var player = self.players[guild]
+        
+        if ((player == nil)) {
+            player = Player(guild: guild, node: self, client: client)
+            self.players[guild] = player!
+        }
+        
+        return player!
+        
     }
 }
