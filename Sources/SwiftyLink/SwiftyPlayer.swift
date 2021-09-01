@@ -31,7 +31,7 @@ open class Player {
     /// - parameter guild: The Guild ID this player is responsible for
     /// - parameter node: The node this player is managed by
     /// - parameter client: The client this player is attached to
-    init(guild: String, node: SwiftyNode, client: DiscordClient) {
+    public required init(guild: String, node: SwiftyNode, client: DiscordClient) {
         self.guildID = guild
         self.node = node
         self.client = client
