@@ -43,7 +43,7 @@ open class Player {
     /// - parameter mute: Whether the bot should be muted or not
     open func connect(channel: String, deaf: Bool, mute: Bool) {
         
-        let payload = DiscordGatewayPayload(code: DiscordGatewayCode.gateway(DiscordNormalGatewayCode.voiceStatusUpdate), payload: DiscordGatewayPayloadData.object(["guild_id": "\(self.guildID)", "channel_id": "\(channel)", "self_mute": false, "self_deaf": true]), sequenceNumber: nil, name: nil)
+        let payload = DiscordGatewayPayload(code: DiscordGatewayCode.gateway(DiscordNormalGatewayCode.voiceStatusUpdate), payload: DiscordGatewayPayloadData.object(["guild_id": "\(self.guildID)", "channel_id": "\(channel)", "self_mute": mute, "self_deaf": deaf]), sequenceNumber: nil, name: nil)
         
         client.shardManager.sendPayload(payload, onShard: 0)
         
@@ -121,4 +121,19 @@ open class Player {
         }
         
     }
+    
+    /// Sends the Voice Server Update payload to Lavalink
+    open func handleVoiceServer(msg: URLSessionWebSocketTask.Message) {
+        
+        self.node.ws?.send(msg, completionHandler: { _ in (); logger.log(level: .info, .init(stringLiteral: "Sent the voice server update to Lavalink.")) })
+        
+    }
+    
+    /// Sends the Voice State Update payload  to Lavalink
+    open func handleVoiceState(msg: URLSessionWebSocketTask.Message) {
+        
+        self.node.ws?.send(msg, completionHandler: { _ in (); logger.log(level: .info, .init(stringLiteral: "Sent the voice state update to Lavalink.")) })
+        
+    }
 }
+
