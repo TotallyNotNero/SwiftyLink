@@ -127,9 +127,12 @@ open class SwiftyNode {
         if ((player == nil)) {
             player = Player(guild: guild, node: self, client: client)
             self.players[guild] = player!
+            logger.log(level: .info, .init(stringLiteral: "Created a new player"), metadata: nil)
         }
         
         return player!
+        
+        logger.log(level: .info, .init(stringLiteral: "Returned an existing player"), metadata: nil)
         
     }
 }
