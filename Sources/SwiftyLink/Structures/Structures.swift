@@ -53,28 +53,6 @@ public struct trackPlay: Encodable {
     public let guildId: String
 }
 
-/// Represents the voice update object Lavalink uses to connect to a voice channel
-public struct voiceUpdateJSON: Encodable {
-    /// The op-code of the json
-    public let op: String
-    /// The session ID of the voice state
-    public let sessionId: String
-    /// The Guild ID belonging to the voice state
-    public let guildId: String
-    /// The Voice Server Update object from discord's event gateway dispatch
-    public let event: serverJSON
-}
-
-/// Represents a voice server update Lavalink intercepts to connect to Discord's voice servers
-public struct serverJSON: Encodable {
-    /// The token of the voice server
-    public let token: String
-    /// The Guild ID belonging to this voice server
-    public let guild_id: String
-    /// The endpoint of the voice server
-    public let endpoint: String
-}
-
 /// Represents a stop object to stop the player
 public struct stopPlayer: Encodable {
     /// The op-code of the JSON
