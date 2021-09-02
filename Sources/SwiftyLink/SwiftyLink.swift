@@ -149,4 +149,3 @@ open class SwiftyNode {
         
     }
 }
-
