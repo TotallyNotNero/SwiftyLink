@@ -72,11 +72,91 @@ public struct musicControls: Encodable {
 }
 
 /// Represents an object to seek the player
-public struct seekPlayer: Encodable {
+public struct seekPlayer: Decodable {
     /// The op code of the JSON
     public let op: String
     /// The Guild ID of the player
     public let guildId: String
     /// The position to seek to
     public let position: String
+}
+
+public struct statResponse: Decodable {
+    public let playingPlayers: Int
+    public let op: String
+    public let memory: memoryResponse
+    public let players: Int
+    public let cpu: cpuResponse
+    public let uptime: Int
+}
+
+public struct memoryResponse: Decodable {
+    public let reservable: Int
+    public let used: Int
+    public let free: Int
+    public let allocated: Int
+}
+
+public struct cpuResponse: Decodable {
+    public let cores: Int
+    public let systemLoad: Int
+    public let lavalinkLoad: Int
+}
+
+public struct trackEndEvent: Decodable {
+    public let op: String
+    public let reason: String
+    public let type: String
+    public let track: String
+    public let guildId: String
+}
+
+extension Dictionary {
+    /// Fetches a value for the given key
+    public func get(i: Key) -> Value {
+        return self[i]!
+    }
+    
+}
+
+public func handleStatResponse(d: Data) ->  statResponse {
+    
+    let rest: statResponse = try! JSONDecoder().decode(statResponse.self, from: d)
+    
+    return rest
+    
+}
+
+public func handleEndResponse(d: [String : String]) ->  trackEndEvent {
+    
+    let data = try! JSONSerialization.data(withJSONObject: d)
+    
+    let rest: trackEndEvent = try! JSONDecoder().decode(trackEndEvent.self, from: data)
+    
+    return rest
+    
+}
+
+public func handleEvent(d: Data) -> trackEndEvent? {
+    
+    var rest: basicEvent = try! JSONDecoder().decode(basicEvent.self, from: d)
+    
+    let op = rest.op
+    
+    // Commented out the other events for now... I will properly handle them later
+    if (op == "stats") { return nil }
+    if (op == "playerUpdate") { return nil }
+    if (rest.type == "TrackStartEvent") { return nil }
+    if (rest.reason == "Disconnected.") { return nil }
+    
+    let response: trackEndEvent = try! JSONDecoder().decode(trackEndEvent.self, from: d)
+    
+    return response
+    
+}
+
+struct basicEvent: Decodable {
+    public let op: String
+    public let type: String?
+    public let reason: String?
 }
