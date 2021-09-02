@@ -39,6 +39,9 @@ open class SwiftyNode {
     
     /// The client responsible for this node
     let client: DiscordClient
+    
+    /// Incoming messages from Lavalink
+    public var messages: String?
 
     // MARK: Initializers
     
@@ -80,7 +83,9 @@ open class SwiftyNode {
         self.ws?.resume()
         
         logger.log(level: .info, .init(stringLiteral: "Successfully initiated a connection to Lavalink."))
-    
+        
+        self.receive()
+        
     }
     
     /// Destroys the active connection to Lavalink.
@@ -101,23 +106,31 @@ open class SwiftyNode {
         
     }
     
-    open func recieveMessage()  {
+    func receive() {
         self.ws!.receive { result in
-            switch result {
-            case .failure(let error):
-                print("Failed to receive message: \(error)")
-            case .success(let message):
-                switch message {
-                case .string(let text):
-                    print("Received text message: \(text)")
-                case .data(let data):
-                    print("Received binary message: \(data)")
-                @unknown default:
-                    fatalError()
-                }
-                self.recieveMessage()
-            }
+        switch result {
+        case .success(let message):
+          switch message {
+          case .data(let data):
+            print("Data received \(data)")
+          case .string(let text):
+           print("Text received \(text)")
+              let data = text.data(using: .utf8)
+              
+              let e = handleEvent(d: data!)
+              
+              print(e?.type)
+              
+              self.messages = e?.type
+              
+           //  print(json)
+          }
+        case .failure(let error):
+          print("Error when receiving \(error)")
         }
+        
+            self.receive()
+      }
     }
     
     open func createPlayer(guild: String) -> Player {
@@ -130,9 +143,10 @@ open class SwiftyNode {
             logger.log(level: .info, .init(stringLiteral: "Created a new player"), metadata: nil)
         }
         
-        return player!
-        
         logger.log(level: .info, .init(stringLiteral: "Returned an existing player"), metadata: nil)
+        
+        return player!
         
     }
 }
+
