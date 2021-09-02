@@ -8,8 +8,7 @@ let package = Package(
     platforms: [.macOS(.v10_15)],
     products: [
         .library(
-            name: "SwiftyLink",
-            
+            name: "SwiftyLink",           
             targets: ["SwiftyLink"]),
     ],
     dependencies: [
