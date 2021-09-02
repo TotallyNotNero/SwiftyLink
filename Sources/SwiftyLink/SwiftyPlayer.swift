@@ -25,6 +25,9 @@ open class Player {
     /// The client this player is attached to
     public let client: DiscordClient
     
+    /// The currently playing track, sourced from the REST response
+    public var song: lavalinkREST?
+    
     // MARK: Initializers
     
     /// Initializes the player
@@ -52,12 +55,14 @@ open class Player {
     }
     
     /// Searches a song on Lavalink
-    open func search(query: String) {
+    open func search(query: String, songHandler: @escaping (lavalinkREST?, Error?) -> Void) {
         let url = URL(string: "http://\(self.node.host):\(self.node.port)/loadtracks?identifier=\(query)")!
         var request = URLRequest(url: url)
         request.allHTTPHeaderFields = [
             "Authorization": "\(self.node.password)"
         ]
+        
+        var res: lavalinkREST?
 
         URLSession.shared.dataTask(with: request) { (data, response, error) in
           guard error == nil else { return }
@@ -65,17 +70,15 @@ open class Player {
 
             let rest: lavalinkREST = try! JSONDecoder().decode(lavalinkREST.self, from: data)
             
-            print(rest.loadType)
-            
             if rest.loadType == "NO_MATCHES" { return }
-            
-            print(rest.tracks[0].track)
+             
+            print(rest.loadType)
             print(rest.tracks[0].info.title)
-            print(rest.tracks[0].info.author)
-            print(rest.tracks[0].info.uri)
             
-            self.play(track: rest.tracks[0].track)
+            res = rest
             
+            songHandler(res, nil)
+    
         }.resume()
     }
     
@@ -87,6 +90,24 @@ open class Player {
         encoder.outputFormatting = .prettyPrinted
         
         let object = trackPlay(op: "play", track: track, guildId: guildID)
+        
+        let JSON = try? encoder.encode(object)
+        
+        let response = String(data: JSON!, encoding: .utf8)!
+        
+        let message = URLSessionWebSocketTask.Message.string(response)
+        
+        self.node.sendUpdate(msg: message)
+        
+    }
+    
+    /// Stops the player
+    open func stop() {
+        
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        
+        let object = stopPlayer(op: "stop", guildId: guildID)
         
         let JSON = try? encoder.encode(object)
         
