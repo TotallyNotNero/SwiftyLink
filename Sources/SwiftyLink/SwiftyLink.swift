@@ -106,6 +106,7 @@ open class SwiftyNode {
         
     }
     
+    /// Recieves messages from Lavalink. This is called in the `connect()` method so it can start a never ending callback loop.
     func receive() {
         self.ws!.receive { result in
         switch result {
