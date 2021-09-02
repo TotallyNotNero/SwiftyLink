@@ -133,6 +133,8 @@ open class SwiftyNode {
       }
     }
     
+    /// Creates a new player for use by the guild's node
+    /// - parameter guild: the ID of the Guild that the player belongs to
     open func createPlayer(guild: String) -> Player {
         
         var player = self.players[guild]
