@@ -150,7 +150,7 @@ open class Player {
         
     }
     
-    /// Sends the Voice State Update payload  to Lavalink
+    /// Sends the Voice State Update payload to Lavalink
     open func handleVoiceState(msg: URLSessionWebSocketTask.Message) {
         
         self.node.ws?.send(msg, completionHandler: { _ in (); logger.log(level: .info, .init(stringLiteral: "Sent the voice state update to Lavalink.")) })
