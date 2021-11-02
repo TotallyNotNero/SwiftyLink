@@ -9,6 +9,11 @@ SwiftyLink supports SwiftDiscord's vapor3 branch out of the box. If you would li
 2. It must be able to send payloads through a shard's websocket connection
 3. It must be able to send the intercepted payloads to this library using the ```sendUpdate()``` method.
 
+# Installation
+SwiftyLink is built as a Swift Package - specifically a library. This makes the package easy to install and integrate into all of your existing work.
+
+Just add the git link as a dependency in your Packages.swift file, then make your project depend on it.
+
 # Connecting to Lavalink
 First, initialize your Lavalink node. 
 ```swift
@@ -127,6 +132,8 @@ Docs are coming soon!! I swear!!!
 
 For support inquires, you can find me in the Discord API server.
 
+It's worth mentioning that due to the rough state of the project, some events are not handled - leaving them to be ignored. For the most part, this is fine - however i'm aiming to handle every event AND leave exposed methods so interacting with them is very easy. This should be done by the mid-version codebase reinforcement.
+
 I have a few items i'd like to complete.
 - Remove the SwiftDiscord dependency (all it does is it talks to the API)
 - Fix some runtime errors
@@ -140,6 +147,13 @@ I am a software developer, therefore I understand how important open source soft
 
 # License
 Licensed under the MIT license.
+
+# Disclaimer
+Made it this far, huh? Seems to me you really want to use this in a project. Before you do -
+- This is pre-release software. Bugs are prevalent.
+- Meant for experienced lavalink users for now. Methods aren't exposed and some events require picking and prying at to work at all.
+
+Because this is pre-release software, I am not responsible for this breaking anything. It's unlikely, but anything can happen. That is ALL ON YOU.
 
 # Credits
 [nuclearace](https://github.com/nuclearace) - SwiftDiscord.
