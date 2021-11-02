@@ -127,6 +127,14 @@ Docs are coming soon!! I swear!!!
 
 For support inquires, you can find me in the Discord API server.
 
+I have a few items i'd like to complete.
+- Remove the SwiftDiscord dependency (all it does is it talks to the API)
+- Fix some runtime errors
+- Safely unwrap each optional instead of force unwrapping it. This makes the syntax cleaner and allows for more efficient debugging, as force unwrapping a nil operator (which is done frequently) will cause a hard crash.
+- Clean up the syntax
+
+I am aiming for all of this to be completed by the mid-version codebase reinforcement.
+
 # Contributing
 I am a software developer, therefore I understand how important open source software is to the community. I also understand the burden of contributing to open source software. The Contributing guidelines are simple and straightforward, easy for a beginner to understand. Following the guidelines are a MUST for contributing, as well as the PR and issue templates.
 
